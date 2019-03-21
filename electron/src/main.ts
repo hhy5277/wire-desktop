@@ -447,7 +447,8 @@ class ElectronWrapperInit {
           contents.session.setCertificateVerifyProc(setCertificateVerifyProc);
 
           // Override remote Access-Control-Allow-Origin for localhost (CORS bypass)
-          const isLocalhostEnvironment = EnvironmentUtil.getEnvironment() == EnvironmentUtil.BackendType.LOCALHOST;
+          const isLocalhostEnvironment =
+            EnvironmentUtil.getEnvironment() == EnvironmentUtil.BackendTypeLabel.LOCALHOST.toUpperCase();
           if (isLocalhostEnvironment) {
             const filter = {
               urls: config.BACKEND_ORIGINS.map(value => `${value}/*`),

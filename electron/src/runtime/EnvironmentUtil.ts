@@ -33,14 +33,7 @@ const pkg: {
 
 let currentEnvironment: BackendType;
 
-enum BackendType {
-  DEV = 'DEV',
-  EDGE = 'EDGE',
-  INTERNAL = 'INTERNAL',
-  LOCALHOST = 'LOCALHOST',
-  PRODUCTION = 'PRODUCTION',
-  RC = 'RC',
-}
+type BackendType = keyof typeof BackendTypeLabel;
 
 enum BackendTypeLabel {
   DEV = 'Development',
@@ -83,11 +76,13 @@ const app = {
 };
 
 const getEnvironment = (): BackendType => {
-  return <BackendType>(currentEnvironment ? currentEnvironment : restoreEnvironment()).toUpperCase();
+  return (currentEnvironment ? currentEnvironment : restoreEnvironment()).toUpperCase() as BackendType;
 };
 
 const isProdEnvironment = (): boolean => {
-  return [BackendType.INTERNAL, BackendType.PRODUCTION].includes(getEnvironment());
+  return [BackendTypeLabel.INTERNAL.toUpperCase(), BackendTypeLabel.PRODUCTION.toUpperCase()].includes(
+    getEnvironment()
+  );
 };
 
 const isLinuxDesktop = (identifier: string): boolean => {
@@ -108,8 +103,8 @@ const linuxDesktop = {
 };
 
 const restoreEnvironment = (): BackendType => {
-  currentEnvironment = settings.restore(SettingsType.ENV, BackendType.INTERNAL);
-  return <BackendType>currentEnvironment;
+  currentEnvironment = settings.restore(SettingsType.ENV, BackendTypeLabel.INTERNAL.toUpperCase()) as BackendType;
+  return currentEnvironment;
 };
 
 const setEnvironment = (env: BackendType): void => {
@@ -130,7 +125,7 @@ const web = {
     if (app.IS_DEVELOPMENT) {
       const currentEnvironment = getEnvironment();
       if (currentEnvironment) {
-        return URL_WEBAPP[<BackendType>currentEnvironment.toUpperCase()];
+        return URL_WEBAPP[currentEnvironment.toUpperCase() as BackendType];
       }
     }
 
